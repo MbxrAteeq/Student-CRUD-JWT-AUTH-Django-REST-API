@@ -2,10 +2,12 @@ from .models import Student
 from django.shortcuts import render
 from .serializers import StudentSerializer
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404, get_list_or_404
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 # JWT AUTHENTICATION
@@ -13,6 +15,8 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 
 # Students CRUD
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
 @csrf_exempt
 def students(request, id=None):
 
