@@ -8,9 +8,25 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 # Create your views here.
 
-# JWT AUTHENTICATION
+@api_view(['POST'])
+def login(request):
+    data = request.data
+
+    if not data['username'] and data['password']:
+        return Response({"Msg":"Please enter Username and Password"})
+
+    user = Student.objects.filter(username=data['username'], password=data['password'])
+    print(user)
+    if user:
+        refresh = RefreshToken.for_user(user)
+        return Response({"Msg":"Logged In", 
+        'refresh': str(refresh),
+        'access': str(refresh.access_token)})
+
+    return Response({"Msg":"Please enter correct Username and Password"})
 
 
 # Students CRUD
